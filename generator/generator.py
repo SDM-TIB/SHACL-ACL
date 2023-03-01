@@ -9,7 +9,6 @@ import getopt
 import subprocess
 from rdflib.plugins.sparql import prepareQuery
 import traceback
-from mysql import connector
 from concurrent.futures import ThreadPoolExecutor
 from configparser import ConfigParser, ExtendedInterpolation
 #from .function_dic import *
@@ -611,10 +610,7 @@ def semantify_file(triples_map, triples_map_list, delimiter, data):
 				else:
 					object = "\"" + predicate_object_map.object_map.value + "\""
 				if predicate_object_map.object_map.datatype != None:
-					if output_format.lower() == "n-triples":
-						object = "\"" + object[1:-1] + "\"" + "^^<{}>".format(predicate_object_map.object_map.datatype)
-					else:
-						object = "\"" + object[1:-1] + "\"" + "^^{}".format(determine_prefix(predicate_object_map.object_map.datatype))
+					object = "\"" + object[1:-1] + "\"" + "^^<{}>".format(predicate_object_map.object_map.datatype)
 			elif predicate_object_map.object_map.mapping_type == "template":
 				try:
 					if predicate_object_map.object_map.term is None:
@@ -713,14 +709,6 @@ def semantify_file(triples_map, triples_map_list, delimiter, data):
 												child_tree = ET.parse(input_file_descriptor)
 												child_root = child_tree.getroot()
 												hash_maker_xml(child_root, triples_map_element, predicate_object_map.object_map)								
-										else:
-											database, query_list = translate_sql(triples_map)
-											db = connector.connect(host=host, port=int(port), user=user, password=password)
-											cursor = db.cursor(buffered=True)
-											cursor.execute("use " + database)
-											for query in query_list:
-												cursor.execute(query)
-											hash_maker_array(cursor, triples_map_element, predicate_object_map.object_map)
 
 									if sublist(predicate_object_map.object_map.child,row.keys()):
 										if child_list_value(predicate_object_map.object_map.child,row) in join_table[triples_map_element.triples_map_id + "_" + child_list(predicate_object_map.object_map.child)]:
@@ -775,14 +763,7 @@ def semantify_file(triples_map, triples_map_list, delimiter, data):
 												child_tree = ET.parse(input_file_descriptor)
 												child_root = child_tree.getroot()
 												hash_maker_xml(child_root, triples_map_element, predicate_object_map.object_map)						
-										else:
-											database, query_list = translate_sql(triples_map)
-											db = connector.connect(host=host, port=int(port), user=user, password=password)
-											cursor = db.cursor(buffered=True)
-											cursor.execute("use " + database)
-											for query in query_list:
-												cursor.execute(query)
-											hash_maker_array(cursor, triples_map_element, predicate_object_map.object_map)
+										
 									if sublist(predicate_object_map.object_map.child,row.keys()):
 										if child_list_value(predicate_object_map.object_map.child,row) in join_table[triples_map_element.triples_map_id + "_" + child_list(predicate_object_map.object_map.child)]:
 											object_list = join_table[triples_map_element.triples_map_id + "_" + child_list(predicate_object_map.object_map.child)][child_list_value(predicate_object_map.object_map.child,row)]
@@ -1282,14 +1263,7 @@ def semantify_json(triples_map, triples_map_list, delimiter, data, iterator):
 											child_tree = ET.parse(input_file_descriptor)
 											child_root = child_tree.getroot()
 											hash_maker_xml(child_root, triples_map_element, predicate_object_map.object_map)							
-									else:
-										database, query_list = translate_sql(triples_map)
-										db = connector.connect(host=host, port=int(port), user=user, password=password)
-										cursor = db.cursor(buffered=True)
-										cursor.execute("use " + database)
-										for query in query_list:
-											cursor.execute(query)
-										hash_maker_array(cursor, triples_map_element, predicate_object_map.object_map)
+									
 								if sublist(predicate_object_map.object_map.child,data.keys()):
 									if child_list_value(predicate_object_map.object_map.child,data) in join_table[triples_map_element.triples_map_id + "_" + child_list(predicate_object_map.object_map.child)]:
 										object_list = join_table[triples_map_element.triples_map_id + "_" + child_list(predicate_object_map.object_map.child)][child_list_value(predicate_object_map.object_map.child,data)]
@@ -1393,7 +1367,6 @@ def semantify_json(triples_map, triples_map_list, delimiter, data, iterator):
 
 									object = None
 								else:
-									print("hola")
 									if triples_map_element.iterator != triples_map.iterator:
 										parent_iterator = triples_map_element.iterator
 										child_keys = triples_map.iterator.split(".")
