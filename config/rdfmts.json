@@ -1,0 +1,370 @@
+[
+  {
+    "rootType": "http://worldbank.org/Country",
+    "predicates": [
+      {
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://www.w3.org/2002/07/owl#sameAs",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/hasAnnualIndicatorEntry",
+        "range": [
+          "http://worldbank.org/AnnualIndicatorEntry"
+        ],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://purl.org/dc/elements/1.1/identifier",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/sameCodeAs",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/sameCountryCode",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/sameCountry",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://www.w3.org/2004/02/skos/core#note",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://dbpedia.org/ontology/income",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://dbpedia.org/ontology/region",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      }
+    ],
+    "linkedTo": [
+      "http://worldbank.org/AnnualIndicatorEntry"
+    ],
+    "wrappers": [
+      {
+        "url": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+        "predicates": [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "http://www.w3.org/2000/01/rdf-schema#label",
+          "http://www.w3.org/2002/07/owl#sameAs",
+          "http://worldbank.org/hasAnnualIndicatorEntry",
+          "http://purl.org/dc/elements/1.1/identifier",
+          "http://worldbank.org/sameCodeAs",
+          "http://worldbank.org/sameCountryCode",
+          "http://worldbank.org/sameCountry",
+          "http://www.w3.org/2004/02/skos/core#note",
+          "http://dbpedia.org/ontology/income",
+          "http://dbpedia.org/ontology/region"
+        ],
+        "urlparam": "",
+        "wrapperType": "SPARQLEndpoint"
+      }
+    ]
+  },
+  {
+    "rootType": "http://worldbank.org/Indicator",
+    "predicates": [
+      {
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://www.w3.org/2000/01/rdf-schema#label",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://purl.org/dc/elements/1.1/identifier",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://www.w3.org/2004/02/skos/core#note",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://purl.org/dc/terms/publisher",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/hasTopic",
+        "range": [
+          "http://worldbank.org/Topic"
+        ],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      }
+    ],
+    "linkedTo": [
+      "http://worldbank.org/Topic"
+    ],
+    "wrappers": [
+      {
+        "url": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+        "predicates": [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "http://www.w3.org/2000/01/rdf-schema#label",
+          "http://purl.org/dc/elements/1.1/identifier",
+          "http://www.w3.org/2004/02/skos/core#note",
+          "http://purl.org/dc/terms/publisher",
+          "http://worldbank.org/hasTopic"
+        ],
+        "urlparam": "",
+        "wrapperType": "SPARQLEndpoint"
+      }
+    ]
+  },
+  {
+    "rootType": "http://worldbank.org/Topic",
+    "predicates": [
+      {
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/hasIndicator",
+        "range": [
+          "http://worldbank.org/Indicator"
+        ],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      }
+    ],
+    "linkedTo": [
+      "http://worldbank.org/Indicator"
+    ],
+    "wrappers": [
+      {
+        "url": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+        "predicates": [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "http://worldbank.org/hasIndicator"
+        ],
+        "urlparam": "",
+        "wrapperType": "SPARQLEndpoint"
+      }
+    ]
+  },
+  {
+    "rootType": "http://worldbank.org/AnnualIndicatorEntry",
+    "predicates": [
+      {
+        "predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://www.w3.org/2002/07/owl#hasValue",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://www.w3.org/2006/time#year",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/hasIndicator",
+        "range": [
+          "http://worldbank.org/Indicator"
+        ],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/hasTopic",
+        "range": [
+          "http://worldbank.org/Topic"
+        ],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/hasCountry",
+        "range": [
+          "http://worldbank.org/Country"
+        ],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      },
+      {
+        "predicate": "http://worldbank.org/worldBankDateYear",
+        "range": [],
+        "policies": [
+          {
+            "dataset": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+            "operator": "PR"
+          }
+        ]
+      }
+    ],
+    "linkedTo": [
+      "http://worldbank.org/Indicator",
+      "http://worldbank.org/Country",
+      "http://worldbank.org/Topic"
+    ],
+    "wrappers": [
+      {
+        "url": "https://labs.tib.eu/sdm/worldbank_endpoint/sparql",
+        "predicates": [
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "http://www.w3.org/2002/07/owl#hasValue",
+          "http://www.w3.org/2006/time#year",
+          "http://worldbank.org/hasIndicator",
+          "http://worldbank.org/hasTopic",
+          "http://worldbank.org/hasCountry",
+          "http://worldbank.org/worldBankDateYear"
+        ],
+        "urlparam": "",
+        "wrapperType": "SPARQLEndpoint"
+      }
+    ]
+  }
+]
