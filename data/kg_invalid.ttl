@@ -1,0 +1,11 @@
+@prefix ex: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:e4908c371849478f8222fc7cbdb8d49a a ex:ObservationMachineCondition ;
+    ex:cpu_usage "0.4"^^xsd:float ;
+    ex:ram_free "50.50255990571412"^^xsd:float ;
+    ex:time "09:09:09"^^xsd:time .
+
+<http://example.org/weather_2023-03-02T09:00:00%2B00:00> a ex:ObservationWeatherCondition ;
+    ex:humidity "99"^^xsd:int ;
+    ex:temperature 0.6 .
