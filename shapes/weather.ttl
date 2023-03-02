@@ -1,0 +1,24 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.org/> .
+@prefix : <http://example.org/shapes/> .
+
+:WeatherCondition a sh:NodeShape;
+  sh:targetClass ex:ObservationWeatherCondition ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:select """
+      SELECT ($this AS ?this) WHERE {
+        $this <http://example.org/humidity> ?o
+        FILTER ( ?o < 70.0 )
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:select """
+      SELECT ($this AS ?this) WHERE {
+        $this <http://example.org/temperature> ?o
+        FILTER ( ?o >= 25.0 )
+      }
+    """ ;
+  ] .

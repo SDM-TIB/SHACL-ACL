@@ -1,0 +1,52 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix td: <https://www.w3.org/2019/wot/td#> .
+@prefix htv: <http://www.w3.org/2011/http#> .
+@prefix hctl: <https://www.w3.org/2019/wot/hypermedia#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex: <http://example.org/> .
+
+<WoTWebAPISource> a td:PropertyAffordance;
+  td:hasForm [
+    # URL and content type
+    hctl:hasTarget "https://api.brightsky.dev/current_weather?lat=52.38186277111038&lon=9.71769914013498";
+    hctl:forContentType "application/json";
+    # Read only
+    hctl:hasOperationType td:readproperty;
+    # Set HTTP method and headers
+    htv:methodName "GET";
+    htv:headers ([
+      htv:fieldName "User-Agent";
+      htv:fieldValue "SHACL-ACL";
+    ]);
+  ];
+.
+
+<WoTWebAPI> a td:Thing;
+  td:hasPropertyAffordance <#WoTWebResource> .
+
+<Weather> a rr:TriplesMap;
+  rml:logicalSource [ a rml:LogicalSource;
+    rml:source <WoTWebAPISource>;
+    rml:referenceFormulation ql:JSONPath;
+    rml:iterator "$.weather.*";
+  ];
+  rr:subjectMap [
+    rr:template "http://example.org/weather_{timestamp}" ;
+    rr:class ex:ObservationWeatherCondition
+  ];
+  rr:predicateObjectMap [
+    rr:predicate ex:temperature ;
+    rr:objectMap [
+      rml:reference "temperature" ;
+      rr:datatype xsd:decimal
+    ];
+  ];
+  rr:predicateObjectMap [
+    rr:predicate ex:humidity ;
+    rr:objectMap [
+      rml:reference "relative_humidity";
+      rr:datatype xsd:int
+    ];
+  ] .

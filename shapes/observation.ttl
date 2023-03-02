@@ -1,0 +1,37 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://example.org/> .
+@prefix : <http://example.org/shapes/> .
+
+:MachineCondition a sh:NodeShape;
+  sh:targetClass ex:ObservationMachineCondition ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:select """
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      SELECT ($this AS ?this) WHERE {
+        $this <http://example.org/time> ?o
+        FILTER (
+          str(?o) > "06:00:00" &&
+          str(?o) < "19:00:00"
+        )
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:select """
+      SELECT ($this AS ?this) WHERE {
+        $this <http://example.org/cpu_usage> ?o
+        FILTER ( ?o >= 30.0 )
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    a sh:SPARQLConstraint ;
+    sh:select """
+      SELECT ($this AS ?this) WHERE {
+        $this <http://example.org/ram_free> ?o
+        FILTER ( ?o < 80.0 )
+      }
+    """ ;
+  ] .
