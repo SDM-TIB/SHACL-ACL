@@ -6,6 +6,28 @@ import urllib
 import pandas as pd 
 import math
 
+def jsonpath_find(element, JSON, path, all_paths):
+	result_path = []
+	if all_paths != []:
+		return all_paths
+	if element in JSON:
+		path = path + element
+		all_paths.append(path)
+		jsonpath_find(element, {}, path, all_paths)
+	for key in JSON:
+		if isinstance(JSON[key], dict):
+			newpath = jsonpath_find(element, JSON[key],path + key + '.',all_paths)
+			if len(newpath) > 0:
+				if newpath[0] not in result_path:
+					result_path.append(newpath[0])
+		elif isinstance(JSON[key], list):
+			for row in JSON[key]:
+				newpath = jsonpath_find(element,row,path + key + '.',all_paths)
+				if len(newpath) > 0:
+					if newpath[0] not in result_path:
+						result_path.append(newpath[0])
+	return result_path
+
 def extract_base(file):
 	base = ""
 	f = open(file,"r")
@@ -73,7 +95,7 @@ def string_substitution_json(string, pattern, row, term, ignore, iterator):
 							value = child[match[0]]
 							for elem in match[1:]:
 								if elem in value:
-									value = valuep[elem]
+									value = value[elem]
 									found = True
 								else:
 									found = False

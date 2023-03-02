@@ -11,8 +11,6 @@ from rdflib.plugins.sparql import prepareQuery
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from configparser import ConfigParser, ExtendedInterpolation
-#from .function_dic import *
-#from .functions import *
 
 try:
 	from string_subs import *
@@ -54,6 +52,321 @@ general_predicates = {"http://www.w3.org/2000/01/rdf-schema#subClassOf":"",
 						"http://www.w3.org/2002/07/owl#sameAs":"",
 						"http://www.w3.org/2000/01/rdf-schema#seeAlso":"",
 						"http://www.w3.org/2000/01/rdf-schema#subPropertyOf":""}
+
+def join_iterator(data, iterator, parent, child):
+	if iterator != "":
+		new_iterator = ""
+		temp_keys = iterator.split(".")
+		row = data
+		executed = True
+		for tp in temp_keys:
+			new_iterator += tp + "."
+			if "$" != tp and "" != tp:
+				if "[*][*]" in tp:
+					if tp.split("[*][*]")[0] in row:
+						row = row[tp.split("[*][*]")[0]]
+					else:
+						row = []
+				elif "[*]" in tp:
+					if tp.split("[*]")[0] in row:
+						row = row[tp.split("[*]")[0]]
+					else:
+						row = []
+				elif "*" == tp:
+					pass
+				else:
+					if tp in row:
+						row = row[tp]
+					else:
+						row = []
+			elif tp == "":
+				if len(row.keys()) == 1:
+					while list(row.keys())[0] not in temp_keys:
+						if list(row.keys())[0] not in temp_keys:
+							row = row[list(row.keys())[0]]
+							if isinstance(row,list):
+								for sub_row in row:
+									join_iterator(sub_row, iterator, parent, child)
+								executed = False
+								break
+							elif isinstance(row,str):
+								row = []
+								break
+						else:
+							join_iterator(row[list(row.keys())[0]], "", parent, child)
+				else:
+					path = jsonpath_find(temp_keys[len(temp_keys)-1],row,"",[])
+					for key in path[0].split("."):
+						if key in temp_keys:
+							join_iterator(row[key], "", parent, child)
+						elif key in row:
+							row = row[key]
+							if isinstance(row,list):
+								for sub_row in row:
+									join_iterator(sub_row, iterator, parent, child)
+								executed = False
+								break
+							elif isinstance(row,dict):
+								join_iterator(row, iterator, parent, child)
+								executed = False
+								break
+							elif isinstance(row,str):
+								row = []
+								break
+			if new_iterator != ".":
+				if "*" == new_iterator[-2]:
+					for sub_row in row:
+						join_iterator(sub_row, iterator.replace(new_iterator[:-1],""), parent, child)
+					executed = False
+					break
+				if "[*][*]" in new_iterator:
+					for sub_row in row:
+						for sub_sub_row in row[sub_row]:
+							join_iterator(sub_sub_row, iterator.replace(new_iterator[:-1],""), parent, child)
+					executed = False
+					break
+				if isinstance(row,list):
+					for sub_row in row:
+						join_iterator(sub_row, iterator.replace(new_iterator[:-1],""), parent, child)
+					executed = False
+					break
+	else:
+		if parent.triples_map_id + "_" + child.child[0] not in join_table:
+			hash_maker([data], parent, child)
+		else:
+			hash_update([data], parent, child, parent.triples_map_id + "_" + child.child[0])
+def hash_maker(parent_data, parent_subject, child_object):
+	global blank_message
+	hash_table = {}
+	for row in parent_data:
+		if child_object.parent[0] in row.keys():
+			if row[child_object.parent[0]] in hash_table:
+				if duplicate == "yes":
+					if parent_subject.subject_map.subject_mapping_type == "reference":
+						value = string_substitution(parent_subject.subject_map.value, ".+", row, "object", ignore, parent_subject.iterator)
+						if value != None:
+							if "http" in value and "<" not in value:
+								value = "<" + value[1:-1] + ">"
+							elif "http" in value and "<" in value:
+								value = value[1:-1]
+						if value not in hash_table[row[child_object.parent[0]]]:
+							hash_table[row[child_object.parent[0]]].update({value : "object"})
+					else:
+						if string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator) != None:
+							value = string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator)
+							if value != None:
+								if parent_subject.subject_map.term_type != None:
+									if "BlankNode" in parent_subject.subject_map.term_type:
+										if "/" in value:
+											value = "_:" + encode_char(value.replace("/","2F")).replace("%","")
+											if "." in value:
+												value = value.replace(".","2E")
+											if blank_message:
+												print("Incorrect format for Blank Nodes. \"/\" will be replace with \"2F\".")
+												blank_message = False
+										else:
+											value = "_:" + encode_char(value).replace("%","")
+											if "." in value:
+												value = value.replace(".","2E")
+								else:
+									value = "<" + value + ">"
+								hash_table[row[child_object.parent[0]]].update({value : "object"})
+				else:
+					if parent_subject.subject_map.subject_mapping_type == "reference":
+						value = string_substitution(parent_subject.subject_map.value, ".+", row, "object", ignore, parent_subject.iterator)
+						if "http" in value and "<" not in value:
+							value = "<" + value[1:-1] + ">"
+						elif "http" in value and "<" in value:
+							value = value[1:-1]
+						hash_table[row[child_object.parent[0]]].update({value : "object"})
+					else:
+						value = string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator)
+						if value != None:
+							if parent_subject.subject_map.term_type != None:
+								if "BlankNode" in parent_subject.subject_map.term_type:
+									if "/" in value:
+										value = "_:" + encode_char(value.replace("/","2F")).replace("%","")
+										if "." in value:
+											value = value.replace(".","2E")
+										if blank_message:
+											print("Incorrect format for Blank Nodes. \"/\" will be replace with \"2F\".")
+											blank_message = False
+									else:
+										value = "_:" + encode_char(value).replace("%","")
+										if "." in value:
+											value = value.replace(".","2E")
+							else:
+								value = "<" + value + ">"
+							hash_table[row[child_object.parent[0]]].update({value : "object"})
+
+			else:
+				if parent_subject.subject_map.subject_mapping_type == "reference":
+					value = string_substitution(parent_subject.subject_map.value, ".+", row, "object", ignore, parent_subject.iterator)
+					if value != None:
+						if "http" in value and "<" not in value:
+							value = "<" + value[1:-1] + ">"
+						elif "http" in value and "<" in value:
+							value = value[1:-1]
+					hash_table.update({row[child_object.parent[0]] : {value : "object"}})
+				else:
+					value = string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator)
+					if value != None:
+						if parent_subject.subject_map.term_type != None:
+							if "BlankNode" in parent_subject.subject_map.term_type:
+								if "/" in value:
+									value = "_:" + encode_char(value.replace("/","2F")).replace("%","")
+									if "." in value:
+										value = value.replace(".","2E")
+									if blank_message:
+										print("Incorrect format for Blank Nodes. \"/\" will be replace with \"2F\".")
+										blank_message = False
+								else:
+									value = "_:" + encode_char(value).replace("%","")
+									if "." in value:
+										value = value.replace(".","2E")
+						else:
+							value = "<" + value + ">"
+						hash_table.update({row[child_object.parent[0]] : {value : "object"}})
+	join_table.update({parent_subject.triples_map_id + "_" + child_object.child[0] : hash_table})
+
+def hash_update(parent_data, parent_subject, child_object,join_id):
+	hash_table = {}
+	for row in parent_data:
+		if child_object.parent[0] in row.keys():
+			if row[child_object.parent[0]] in hash_table:
+				if duplicate == "yes":
+					if parent_subject.subject_map.subject_mapping_type == "reference":
+						value = string_substitution(parent_subject.subject_map.value, ".+", row, "object", ignore, parent_subject.iterator)
+						if value != None:
+							if "http" in value and "<" not in value:
+								value = "<" + value[1:-1] + ">"
+							elif "http" in value and "<" in value:
+								value = value[1:-1]
+						if value not in hash_table[row[child_object.parent[0]]]:
+							hash_table[row[child_object.parent[0]]].update({value : "object"})
+					else:
+						if string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator) is not None:
+							if "<" + string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator) + ">" not in hash_table[row[child_object.parent[0]]]:
+								hash_table[row[child_object.parent[0]]].update({"<" + string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator) + ">" : "object"})
+				else:
+					if parent_subject.subject_map.subject_mapping_type == "reference":
+						value = string_substitution(parent_subject.subject_map.value, ".+", row, "object", ignore)
+						if "http" in value and "<" not in value:
+							value = "<" + value[1:-1] + ">"
+						elif "http" in value and "<" in value:
+							value = value[1:-1]
+						hash_table[row[child_object.parent[0]]].update({value : "object"})
+					else:
+						if string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator) is not None:
+							hash_table[row[child_object.parent[0]]].update({"<" + string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator) + ">" : "object"})
+
+			else:
+				if parent_subject.subject_map.subject_mapping_type == "reference":
+					value = string_substitution(parent_subject.subject_map.value, ".+", row, "object", ignore, parent_subject.iterator)
+					if value != None:
+						if "http" in value and "<" not in value:
+							value = "<" + value[1:-1] + ">"
+						elif "http" in value and "<" in value:
+							value = value[1:-1]
+					hash_table.update({row[child_object.parent[0]] : {value : "object"}})
+				else:
+					if string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator) is not None:
+						hash_table.update({row[child_object.parent[0]] : {"<" + string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator) + ">" : "object"}})
+	join_table[join_id].update(hash_table)
+
+def hash_maker_list(parent_data, parent_subject, child_object):
+	hash_table = {}
+	global blank_message
+	for row in parent_data:
+		if sublist(child_object.parent,row.keys()):
+			if child_list_value(child_object.parent,row) in hash_table:
+				if duplicate == "yes":
+					if parent_subject.subject_map.subject_mapping_type == "reference":
+						value = string_substitution(parent_subject.subject_map.value, ".+", row, "object", ignore, parent_subject.iterator)
+						if value != None:
+							if "http" in value and "<" not in value:
+								value = "<" + value[1:-1] + ">"
+							elif "http" in value and "<" in value:
+								value = value[1:-1]
+						hash_table[child_list_value(child_object.parent,row)].update({value : "object"})
+					else:
+						value = string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator)
+						if value != None:
+							if parent_subject.subject_map.term_type != None:
+								if "BlankNode" in parent_subject.subject_map.term_type:
+									if "/" in value:
+										value = "_:" + encode_char(value.replace("/","2F")).replace("%","")
+										if "." in value:
+											value = value.replace(".","2E")
+										if blank_message:
+											print("Incorrect format for Blank Nodes. \"/\" will be replace with \"2F\".")
+											blank_message = False
+									else:
+										value = "_:" + encode_char(value).replace("%","")
+										if "." in value:
+											value = value.replace(".","2E")
+							else:
+								value = "<" + value + ">"
+							hash_table[child_list_value(child_object.parent,row)].update({value: "object"})
+
+
+				else:
+					if parent_subject.subject_map.subject_mapping_type == "reference":
+						value = string_substitution(parent_subject.subject_map.value, ".+", row, "object", ignore, parent_subject.iterator)
+						if "http" in value and "<" not in value:
+							value = "<" + value[1:-1] + ">"
+						elif "http" in value and "<" in value:
+							value = value[1:-1]
+						hash_table[child_list_value(child_object.parent,row)].update({value : "object"})
+					else:
+						value = string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator)
+						if value != None:
+							if parent_subject.subject_map.term_type != None:
+								if "BlankNode" in parent_subject.subject_map.term_type:
+									if "/" in value:
+										value = "_:" + encode_char(value.replace("/","2F")).replace("%","")
+										if "." in value:
+											value = value.replace(".","2E")
+										if blank_message:
+											print("Incorrect format for Blank Nodes. \"/\" will be replace with \"2F\".")
+											blank_message = False
+									else:
+										value = "_:" + encode_char(value).replace("%","")
+										if "." in value:
+											value = value.replace(".","2E")
+							else:
+								value = "<" + value + ">"
+							hash_table[child_list_value(child_object.parent,row)].update({value: "object"})
+
+			else:
+				if parent_subject.subject_map.subject_mapping_type == "reference":
+					value = string_substitution(parent_subject.subject_map.value, ".+", row, "object", ignore, parent_subject.iterator)
+					if value != None:
+						if "http" in value and "<" not in value:
+							value = "<" + value[1:-1] + ">"
+						elif "http" in value and "<" in value:
+							value = value[1:-1]
+					hash_table.update({child_list_value(child_object.parent,row) : {value : "object"}})
+				else:
+					value = string_substitution(parent_subject.subject_map.value, "{(.+?)}", row, "object", ignore, parent_subject.iterator)
+					if value != None:
+						if parent_subject.subject_map.term_type != None:
+							if "BlankNode" in parent_subject.subject_map.term_type:
+								if "/" in value:
+									value = "_:" + encode_char(value.replace("/","2F")).replace("%","")
+									if "." in value:
+										value = value.replace(".","2E")
+									if blank_message:
+										print("Incorrect format for Blank Nodes. \"/\" will be replace with \"2F\".")
+										blank_message = False
+								else:
+									value = "_:" + encode_char(value).replace("%","")
+									if "." in value:
+										value = value.replace(".","2E")
+						else:
+							value = "<" + value + ">"
+						hash_table.update({child_list_value(child_object.parent,row) : {value : "object"}})
+	join_table.update({parent_subject.triples_map_id + "_" + child_list(child_object.child) : hash_table})
 
 def hash_maker_array(parent_data, parent_subject, child_object):
 	hash_table = {}
@@ -703,12 +1016,7 @@ def semantify_file(triples_map, triples_map_list, delimiter, data):
 															hash_maker(data, triples_map_element, predicate_object_map.object_map)
 														elif len(data) < 2:
 															hash_maker(data[list(data.keys())[0]], triples_map_element, predicate_object_map.object_map)
-
-										elif triples_map_element.file_format == "XPath":
-											with open(str(triples_map_element.data_source), "r") as input_file_descriptor:
-												child_tree = ET.parse(input_file_descriptor)
-												child_root = child_tree.getroot()
-												hash_maker_xml(child_root, triples_map_element, predicate_object_map.object_map)								
+							
 
 									if sublist(predicate_object_map.object_map.child,row.keys()):
 										if child_list_value(predicate_object_map.object_map.child,row) in join_table[triples_map_element.triples_map_id + "_" + child_list(predicate_object_map.object_map.child)]:
@@ -756,13 +1064,7 @@ def semantify_file(triples_map, triples_map_list, delimiter, data):
 													if isinstance(data, list):
 														hash_maker_list(data, triples_map_element, predicate_object_map.object_map)
 													elif len(data) < 2:
-														hash_maker_list(data[list(data.keys())[0]], triples_map_element, predicate_object_map.object_map)
-
-										elif triples_map_element.file_format == "XPath":
-											with open(str(triples_map_element.data_source), "r") as input_file_descriptor:
-												child_tree = ET.parse(input_file_descriptor)
-												child_root = child_tree.getroot()
-												hash_maker_xml(child_root, triples_map_element, predicate_object_map.object_map)						
+														hash_maker_list(data[list(data.keys())[0]], triples_map_element, predicate_object_map.object_map)						
 										
 									if sublist(predicate_object_map.object_map.child,row.keys()):
 										if child_list_value(predicate_object_map.object_map.child,row) in join_table[triples_map_element.triples_map_id + "_" + child_list(predicate_object_map.object_map.child)]:
@@ -1094,7 +1396,7 @@ def semantify_json(triples_map, triples_map_list, delimiter, data, iterator):
 						if graph != None and "defaultGraph" not in graph:
 							if "{" in graph:	
 								rdf_type = rdf_type[:-2] + " <" + string_substitution_json(graph, "{(.+?)}", data, "subject",ignore,iterator) + "> .\n"
-								dictionary_table_update("<" + string_substitution_json(graph, "{(.+?)}", row, "subject",ignore, triples_map.iterator) + ">")
+								dictionary_table_update("<" + string_substitution_json(graph, "{(.+?)}", data, "subject",ignore,iterator) + ">")
 							else:
 								rdf_type = rdf_type[:-2] + " <" + graph + "> .\n"
 								dictionary_table_update("<" + graph + ">")
@@ -1256,13 +1558,8 @@ def semantify_json(triples_map, triples_map_list, delimiter, data, iterator):
 												if triples_map_element.iterator != "None" and triples_map_element.iterator != "$.[*]":
 													join_iterator(data_element, triples_map_element.iterator, triples_map_element, predicate_object_map.object_map)
 												else:
-													hash_maker(element[list(element.keys())[0]], triples_map_element, predicate_object_map.object_map)
-
-									elif triples_map_element.file_format == "XPath":
-										with open(str(triples_map_element.data_source), "r") as input_file_descriptor:
-											child_tree = ET.parse(input_file_descriptor)
-											child_root = child_tree.getroot()
-											hash_maker_xml(child_root, triples_map_element, predicate_object_map.object_map)							
+													hash_maker(data_element[list(data_element.keys())[0]], triples_map_element, predicate_object_map.object_map)
+						
 									
 								if sublist(predicate_object_map.object_map.child,data.keys()):
 									if child_list_value(predicate_object_map.object_map.child,data) in join_table[triples_map_element.triples_map_id + "_" + child_list(predicate_object_map.object_map.child)]:
@@ -1345,7 +1642,7 @@ def semantify_json(triples_map, triples_map_list, delimiter, data, iterator):
 																					generated_triples.update({triple : number_triple})
 																					g_triples.update({predicate : {subject + "_" + object: triple}})
 																				elif subject + "_" + object not in g_triples[predicate]:
-																					oknowledge_graph += triple
+																					knowledge_graph += triple
 																					generated_triples.update({triple : number_triple})
 																					g_triples[predicate].update({subject + "_" + object: triple})
 																				elif triple not in g_triples[predicate][subject + "_" + obj]: 
@@ -1503,4 +1800,4 @@ def kg_generation(config_path):
 	return rdflib.Graph().parse(data=knowledge_graph, format='n3')
 
 if __name__ == '__main__':
-	kg_generation("config.ini")
+	kg_generation("/home/enrique/Documents/ESWC_2023_Demo/config.ini")
