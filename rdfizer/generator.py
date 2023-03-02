@@ -1,14 +1,8 @@
 import os
-import re
 import csv
-import sys
-import uuid
+import pandas as pd
 import rdflib
-import urllib
-import getopt
-import subprocess
 from rdflib.plugins.sparql import prepareQuery
-import traceback
 from concurrent.futures import ThreadPoolExecutor
 from configparser import ConfigParser, ExtendedInterpolation
 
@@ -17,7 +11,6 @@ try:
 except:
 	from .string_subs import *
 
-from rdflib.serializer import Serializer
 import json
 from urllib.request import urlopen
 try:
