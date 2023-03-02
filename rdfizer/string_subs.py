@@ -1,9 +1,6 @@
 import re
-import csv
 import sys
-import os
 import urllib
-import pandas as pd 
 import math
 
 def jsonpath_find(element, JSON, path, all_paths):
