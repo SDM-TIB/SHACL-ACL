@@ -744,7 +744,7 @@ def semantify_file(triples_map, triples_map_list, delimiter, data):
 	no_update = True
 	global blank_message
 	global knowledge_graph
-	print("TM:",triples_map.triples_map_name)
+	# print("TM:",triples_map.triples_map_name)
 	for row in data:
 		generated = 0
 		duplicate_type = False
@@ -1175,7 +1175,7 @@ def semantify_file(triples_map, triples_map_list, delimiter, data):
 				continue
 
 def semantify_json(triples_map, triples_map_list, delimiter, data, iterator):
-	print("TM:", triples_map.triples_map_name)
+	# print("TM:", triples_map.triples_map_name)
 
 	triples_map_triples = {}
 	generated_triples = {}
