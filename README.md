@@ -1,4 +1,5 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SDM-TIB/SHACL-ACL/HEAD?labpath=SHACL-ACL.ipynb)
 
 # SHACL-ACL: Access Control with SHACL
 
@@ -22,6 +23,7 @@ The access control policies consider the current condition of the executing mach
 The SPARQL query used in the demonstration returns the life expectancy in Germany for the last three years (in the data) from the World Bank KG.
 This knowledge graph contains various indicators like life expectancy, population, inflation, and age distribution per country per year.
 Since the decision about granting access cannot be guaranteed with the live data, two additional use cases are included that ensure that at least once the access is denied or granted, respectively.
+Click the binder badge at the top in order to execute the notebook yourself.
 
 ## Used Concepts / Technologies
 
