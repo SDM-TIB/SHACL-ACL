@@ -25,6 +25,35 @@ This knowledge graph contains various indicators like life expectancy, populatio
 Since the decision about granting access cannot be guaranteed with the live data, two additional use cases are included that ensure that at least once the access is denied or granted, respectively.
 Click the binder badge at the top in order to execute the notebook yourself.
 
+### Running the Demo Locally
+
+In order to run the demo of SHACL-ACL in your local machine, execute the following steps.
+Note that Python 3.10 is recommended for running the demo.
+For the sake of simplicity, the instructions do not include the setup of a virtual environment.
+However, as per recommendation, Python projects should be executed in their own virtual environment.
+
+1. Clone the repository
+```bash
+git clone git@github.com:SDM-TIB/SHACL-ACL.git
+```
+2. Change into the directory
+```bash
+cd SHACL-ACL
+```
+3. Install dependencies
+```bash
+python -m pip install -r requirements.txt
+python -m pip install jupyter
+```
+4. Start Jupyter Notebook
+```bash
+jupyter notebook --ip='*' --NotebookApp.token='' --NotebookApp.password=''
+```
+5. Access the demo by navigating to the following URL in your web browser
+```
+http://localhost:8888/notebooks/SHACL-ACL.ipynb
+```
+
 ## Used Concepts / Technologies
 
 - Resource Description Framework (RDF) [\[4\]](#4)
