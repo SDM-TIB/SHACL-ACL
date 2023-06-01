@@ -1,5 +1,6 @@
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SDM-TIB/SHACL-ACL/HEAD?labpath=SHACL-ACL.ipynb)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)&nbsp;&nbsp;
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SDM-TIB/SHACL-ACL/HEAD?labpath=SHACL-ACL.ipynb)&nbsp;&nbsp;
+[![YouTube](https://img.shields.io/badge/Minute%20Madness-ESWC%202023-blue?logo=YouTube&style=social)](https://youtu.be/LANi46Sl5nE)
 
 # SHACL-ACL: Access Control with SHACL
 
