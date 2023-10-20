@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use SHACL-ACL in your work, please cite it using the following metadata."
+authors:
+- family-names: "Rohde"
+  given-names: "Philip D."
+  orcid: "https://orcid.org/0000-0002-9835-4354"
+- family-names: "Iglesias"
+  given-names: "Enrique"
+  orcid: "https://orcid.org/0000-0002-8734-3123"
+- family-names: "Vidal"
+  given-names: "Maria-Esther"
+  orcid: "https://orcid.org/0000-0003-1160-8727"
+title: "SHACL-ACL: Access Control with SHACL"
+url: "https://github.com/SDM-TIB/SHACL-ACL"
+preferred-citation:
+  type: conference-paper
+  authors:
+  - family-names: "Rohde"
+    given-names: "Philip D."
+    orcid: "https://orcid.org/0000-0002-9835-4354"
+  - family-names: "Iglesias"
+    given-names: "Enrique"
+    orcid: "https://orcid.org/0000-0002-8734-3123"
+  - family-names: "Vidal"
+    given-names: "Maria-Esther"
+    orcid: "https://orcid.org/0000-0003-1160-8727"
+  doi: "10.1007/978-3-031-43458-7_4"
+  title: "SHACL-ACL: Access Control with SHACL"
+  year: 2023
+  collection-title: "The Semantic Web: ESWC 2023 Satelite Events"
+  publisher: "Springer, Cham"

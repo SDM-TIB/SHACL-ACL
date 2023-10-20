@@ -69,6 +69,14 @@ http://localhost:8888/notebooks/SHACL-ACL.ipynb
 | **Description** | An efficient RML-compliant engine for knowledge graph creation                                                                                               | A SHACL validator capable of planning the traversal and execution of the validation of a shape schema to detect violations early                          | Federated query engine over RDF sources                                                                                                            |
 | **Version**     | modified version (see directory `rdfizer`)                                                                                                                   | 1.3.0                                                                                                                                                     | 0.11.2                                                                                                                                             |
 
+
+## License
+SHACL-ACL is licensed under [Apache-2.0](https://github.com/SDM-TIB/SHACL-ACL/blob/master/LICENSE).
+
+## Publication
+
+Philipp D. Rohde, Enrique Iglesias, Maria-Esther Vidal. SHACL-ACL: Access Control with SHACL. In: _The Semantic Web: ESWC 2023 Satelite Events_. Springer, 2023, pp. 22–26. DOI: [10.1007/978-3-031-43458-7_4](https://doi.org/10.1007/978-3-031-43458-7_4). 
+
 ## References
 <a name="1">[1]</a> SHACL Specification. 2017. URL: [https://www.w3.org/TR/2017/REC-shacl-20170720/](https://www.w3.org/TR/2017/REC-shacl-20170720/).
 
